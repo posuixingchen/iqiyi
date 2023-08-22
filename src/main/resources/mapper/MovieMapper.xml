@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjc.mapper.MovieMapper">
+    <resultMap id="movieMap" type="com.zjc.pojo.Movie">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="director" column="director"/>
+        <result property="time_length" column="time_length"/>
+        <result property="pub_date" column="pub_date"/>
+        <result property="description" column="description"/>
+        <result property="rating" column="rating"/>
+        <result property="pic" column="pic"/>
+
+        <collection property="categories" ofType="com.zjc.pojo.Category">
+            <id property="id" column="cid"/>
+            <result property="catname" column="catname"/>
+        </collection>
+
+        <collection property="actors" ofType="com.zjc.pojo.Actor">
+            <id property="id" column="aid"/>
+            <result property="name" column="aname"/>
+            <result property="birthday" column="abirthday"/>
+            <result property="sex" column="asex"/>
+            <result property="description" column="adescription"/>
+            <result property="pic" column="apic"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="findMovie" resultMap="movieMap">
+        select movie.*,
+               actor.id          aid,
+               actor.name        aname,
+               actor.birthday    abirthday,
+               actor.sex         asex,
+               actor.description adescription,
+               actor.pic         apic,
+               category.id       cid,
+               category.catname  catname
+        from movie
+                 inner join movie_actor on movie.id = movie_actor.movieid
+                 inner join actor on movie_actor.actorid = actor.id
+                 inner join movie_category on movie.id = movie_category.movieid
+                 inner join category on movie_category.categoryid = category.id
+    </select>
+
+</mapper>

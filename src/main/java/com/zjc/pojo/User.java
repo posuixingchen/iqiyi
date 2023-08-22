@@ -16,4 +16,7 @@ public class User {
 
     @TableField("password")
     private String password;
+
+    public User() {
+    }
 }

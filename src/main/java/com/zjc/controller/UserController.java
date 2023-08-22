@@ -17,11 +17,20 @@ public class UserController {
 
     @PostMapping("/register")
     public R register(@RequestBody User user) {
-        int flag = userService.registerUser(user);
-        if (flag != 1) {
-            return new R(Code.WORK_ERR, "注册失败");
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+
+        wrapper.eq("name", user.getName());
+
+        User result = userService.selectUser(wrapper);
+        if (result != null) {
+            return new R(Code.WORK_ERR, "用户名已存在");
+        } else {
+            int flag = userService.registerUser(user);
+            if (flag != 1) {
+                return new R(Code.WORK_ERR, "注册失败");
+            }
+            return new R(Code.WORK_OK, "注册成功");
         }
-        return new R(Code.WORK_OK, "注册成功");
     }
 
     @PostMapping("/login/{name}/{password}")
