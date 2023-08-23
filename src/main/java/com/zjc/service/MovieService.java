@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MovieService {
     //新增一条电影记录
-    int addMovie(Movie movie);
+    int saveMovie(Movie movie);
 
     //删除一条电影记录
     int deleteMovie(Integer id);
@@ -17,4 +17,6 @@ public interface MovieService {
 
     //查询所有电影
     List<Movie> findMovie();
+
+    Movie findById(int movieId);
 }

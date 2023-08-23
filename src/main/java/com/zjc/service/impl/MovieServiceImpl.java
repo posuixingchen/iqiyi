@@ -1,8 +1,10 @@
 package com.zjc.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zjc.mapper.MovieCategoryMapper;
 import com.zjc.mapper.MovieMapper;
+import com.zjc.pojo.Category;
 import com.zjc.pojo.Movie;
+import com.zjc.pojo.MovieCategory;
 import com.zjc.service.MovieService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,36 +17,62 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private MovieMapper movieMapper;
-
+    @Autowired
+    private MovieCategoryMapper movieCategoryMapper;
 
     @Override
-    public int addMovie(Movie movie) {
-        Movie entity = new Movie();
-        entity.setId(movie.getId());
-        entity.setName(movie.getName());
-        entity.setDirector(movie.getDirector());
-        entity.setTime_length(movie.getTime_length());
-        entity.setPub_date(movie.getPub_date());
-        entity.setDescription(movie.getDescription());
-        entity.setRating(movie.getRating());
-        entity.setPic(movie.getPic());
-        return movieMapper.insert(entity);
+    public int saveMovie(Movie movie) {
+        int flag = 0;
+        flag = movieMapper.saveMovie(movie);
+        int mid = movie.getId();
+        String categories = movie.getCategories();
+        String[] cateids = categories.split(",");
+        for (String cid : cateids) {
+            int cateid = Integer.parseInt(cid);
+            MovieCategory entity = new MovieCategory();
+            entity.setMovieid(mid);
+            entity.setCategoryid(cateid);
+            movieCategoryMapper.insert(entity);
+        }
+        return flag;
     }
 
     @Override
     public int deleteMovie(Integer id) {
-        return movieMapper.deleteById(id);
+        int flag1 = movieMapper.deleteMovieCategories(id);
+        int flag2 = movieMapper.deleteMovieActor(id);
+        int flag3 = movieMapper.deleteMovie(id);
+        if (flag1 == 0 || flag2 == 0 || flag3 == 0) {
+            return 0;
+        } else return 1;
     }
 
     @Override
     public int updateMovie(Movie movie) {
-        Movie entity = new Movie();
-        BeanUtils.copyProperties(movie, entity);
-        return movieMapper.updateById(entity);
+        int flag1 = movieMapper.updateMovie(movie);
+        int flag2 = movieMapper.deleteMovieCategories(movie.getId());
+        String categories = movie.getCategories();
+        String[] cateids = categories.split(",");
+        for (String cid : cateids) {
+            int cateid = Integer.parseInt(cid);
+            MovieCategory entity = new MovieCategory();
+            entity.setMovieid(movie.getId());
+            entity.setCategoryid(cateid);
+            movieCategoryMapper.insert(entity);
+        }
+        if (flag1 == 0 || flag2 == 0) {
+            return 0;
+        }
+        return 1;
     }
 
     @Override
     public List<Movie> findMovie() {
         return movieMapper.findMovie();
+    }
+
+    @Override
+    public Movie findById(int movieId) {
+        return movieMapper.findById(movieId);
     }
 }

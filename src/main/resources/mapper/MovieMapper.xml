@@ -29,7 +29,6 @@
         </collection>
     </resultMap>
 
-
     <select id="findMovie" resultMap="movieMap">
         select movie.*,
                actor.id          aid,
@@ -41,10 +40,64 @@
                category.id       cid,
                category.catname  catname
         from movie
-                 inner join movie_actor on movie.id = movie_actor.movieid
-                 inner join actor on movie_actor.actorid = actor.id
-                 inner join movie_category on movie.id = movie_category.movieid
-                 inner join category on movie_category.categoryid = category.id
+                 left join movie_actor on movie.id = movie_actor.movieid
+                 left join actor on movie_actor.actorid = actor.id
+                 left join movie_category on movie.id = movie_category.movieid
+                 left join category on movie_category.categoryid = category.id
     </select>
 
+    <select id="findById" resultType="com.zjc.pojo.Movie">
+        select movie.*,
+               actor.id          aid,
+               actor.name        aname,
+               actor.birthday    abirthday,
+               actor.sex         asex,
+               actor.description adescription,
+               actor.pic         apic,
+               category.id       cid,
+               category.catname  catname
+        from movie
+                 left join movie_actor on movie.id = movie_actor.movieid
+                 left join actor on movie_actor.actorid = actor.id
+                 left join movie_category on movie.id = movie_category.movieid
+                 left join category on movie_category.categoryid = category.id
+        where movie.id = #{id}
+    </select>
+
+    <insert id="saveMovie" parameterType="com.zjc.pojo.Movie">
+        insert into movie(name,director,time_length,pub_date,description,rating,pic)
+        values (#{name},#{director},#{time_length},#{pub_date},#{description},#{rating},#{pic})
+        <selectKey order="AFTER" keyProperty="id" resultType="Integer">
+            select LAST_INSERT_ID as id
+        </selectKey>
+    </insert>
+
+
+    <delete id="deleteMovieCategories" parameterType="integer">
+        delete
+        from movie_category
+        where movieid = #{id}
+    </delete>
+    <delete id="deleteMovieActor" parameterType="integer">
+        delete
+        from movie_actor
+        where movieid = #{id}
+    </delete>
+    <delete id="deleteMovie" parameterType="integer">
+        delete
+        from movie
+        where id = #{id}
+    </delete>
+
+    <update id="updateMovie" parameterType="com.zjc.pojo.Movie">
+        update movie
+        set name        = #{name},
+            director    = #{director},
+            time_length = #{time_length},
+            pub_date    = #{pub_date},
+            description = #{description},
+            rating      = #{rating},
+            pic         = #{pic}
+        where id = #{id}
+    </update>
 </mapper>

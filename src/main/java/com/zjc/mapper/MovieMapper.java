@@ -10,5 +10,17 @@ import java.util.List;
 @Mapper
 @Repository
 public interface MovieMapper extends BaseMapper<Movie> {
-    public List<Movie> findMovie();
+    List<Movie> findMovie();
+
+    int saveMovie(Movie movie);
+
+    Movie findById(int movieId);
+
+    int deleteMovieCategories(Integer id);
+
+    int deleteMovieActor(Integer id);
+
+    int deleteMovie(Integer id);
+
+    int updateMovie(Movie movie);
 }

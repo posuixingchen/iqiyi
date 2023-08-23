@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.scheduling.support.SimpleTriggerContext;
 
@@ -28,6 +29,7 @@ public class Movie {
     private int time_length;
 
     @TableField("pub_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date pub_date;
 
     @TableField("description")
@@ -41,7 +43,7 @@ public class Movie {
 
     private List<Actor> actors;
 
-    private List<Category> categories;
+    private String categories;
 
     public Movie() {
     }
