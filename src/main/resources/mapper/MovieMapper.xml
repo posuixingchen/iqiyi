@@ -29,6 +29,7 @@
         </collection>
     </resultMap>
 
+
     <select id="findMovie" resultMap="movieMap">
         select movie.*,
                actor.id          aid,
@@ -64,6 +65,67 @@
         where movie.id = #{id}
     </select>
 
+    <select id="findTop3ByCates" resultMap="movieMap">
+        select movie.*,
+               actor.id          aid,
+               actor.name        aname,
+               actor.birthday    abirthday,
+               actor.sex         asex,
+               actor.description adescription,
+               actor.pic         apic,
+               category.id       cid,
+               category.catname  catname
+        from movie
+                 left join movie_actor on movie.id = movie_actor.movieid
+                 left join actor on movie_actor.actorid = actor.id
+                 left join movie_category on movie.id = movie_category.movieid
+                 left join category on movie_category.categoryid = category.id
+        where movie.id != #{id}
+          and movie.id in (
+            select movie_category.movieid
+            from movie_category
+            where movie_category.movieid != #{id}
+          and movie_category.categoryid in (
+            select movie_category.id
+            from movie
+            left join movie_category on movie_category.movieid = movie.id
+            where movie.id = #{id}
+            )
+            )
+        order by movie.pub_date desc
+    </select>
+
+    <select id="findTop3ByActors" resultMap="movieMap">
+        select movie.*,
+               actor.id          aid,
+               actor.name        aname,
+               actor.birthday    abirthday,
+               actor.sex         asex,
+               actor.description adescription,
+               actor.pic         apic,
+               category.id       cid,
+               category.catname  catname
+        from movie
+                 left join movie_actor on movie.id = movie_actor.movieid
+                 left join actor on movie_actor.actorid = actor.id
+                 left join movie_category on movie.id = movie_category.movieid
+                 left join category on movie_category.categoryid = category.id
+        where movie.id != #{id}
+          and movie.id in (
+            select movie_actor.movieid
+            from movie_actor
+            where movie_actor.movieid != #{id}
+          and movie_actor.actorid in (
+            select movie_actor.id
+            from movie
+            left join movie_actor on movie_actor.movieid = movie.id
+            where movie.id = #{id}
+            )
+            )
+        order by movie.pub_date desc
+    </select>
+
+
     <insert id="saveMovie" parameterType="com.zjc.pojo.Movie">
         insert into movie(name,director,time_length,pub_date,description,rating,pic)
         values (#{name},#{director},#{time_length},#{pub_date},#{description},#{rating},#{pic})
@@ -78,16 +140,19 @@
         from movie_category
         where movieid = #{id}
     </delete>
+
     <delete id="deleteMovieActor">
         delete
         from movie_actor
         where movieid = #{id}
     </delete>
+
     <delete id="deleteMovie">
         delete
         from movie
         where id = #{id}
     </delete>
+
 
     <update id="updateMovie" parameterType="com.zjc.pojo.Movie">
         update movie

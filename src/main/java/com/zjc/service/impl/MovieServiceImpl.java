@@ -2,15 +2,20 @@ package com.zjc.service.impl;
 
 import com.zjc.mapper.MovieCategoryMapper;
 import com.zjc.mapper.MovieMapper;
+import com.zjc.mapper.RecommendTypeMapper;
 import com.zjc.pojo.Category;
 import com.zjc.pojo.Movie;
 import com.zjc.pojo.MovieCategory;
+import com.zjc.pojo.RecommendType;
 import com.zjc.service.MovieService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -19,6 +24,8 @@ public class MovieServiceImpl implements MovieService {
     private MovieMapper movieMapper;
     @Autowired
     private MovieCategoryMapper movieCategoryMapper;
+    @Autowired
+    private RecommendTypeMapper recommendTypeMapper;
 
     @Override
     public int saveMovie(Movie movie) {
@@ -67,5 +74,33 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie findById(int movieId) {
         return movieMapper.findById(movieId);
+    }
+
+    @Override
+    public List<Movie> recommendMovieList(int movieId) {
+        Movie movie = movieMapper.findById(movieId);
+        List<RecommendType> recommendList = recommendTypeMapper.findRecommendList();
+        List<Movie> recommendMovieList = new ArrayList<>();
+        Set<Integer> recommendMovieIds = new HashSet<>();
+        for (RecommendType recommendtype : recommendList) {
+            if (recommendtype.getId() == 1) {
+                List<Movie> top3ByCates = movieMapper.findTop3ByCates(movieId);
+                for (Movie m : top3ByCates) {
+                    recommendMovieList.add(m);
+                    recommendMovieIds.add(m.getId());
+                }
+            } else if (recommendtype.getId() == 2) {
+                List<Movie> top3ByActors = movieMapper.findTop3ByActors(movieId);
+                for (Movie m : top3ByActors) {
+                    if (!recommendMovieIds.contains(m.getId())) {
+                        recommendMovieList.add(m);
+                        recommendMovieIds.add(m.getId());
+                    }
+                }
+            } else {
+
+            }
+        }
+        return recommendMovieList;
     }
 }

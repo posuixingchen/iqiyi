@@ -23,4 +23,8 @@ public interface MovieMapper extends BaseMapper<Movie> {
     int deleteMovie(Integer id);
 
     int updateMovie(Movie movie);
+
+    List<Movie> findTop3ByCates(int movieId);
+
+    List<Movie> findTop3ByActors(int movieId);
 }

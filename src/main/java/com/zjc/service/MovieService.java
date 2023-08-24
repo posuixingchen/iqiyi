@@ -19,4 +19,6 @@ public interface MovieService {
     List<Movie> findMovie();
 
     Movie findById(int movieId);
+
+    List<Movie> recommendMovieList(int movieId);
 }

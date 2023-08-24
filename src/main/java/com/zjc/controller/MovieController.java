@@ -100,4 +100,13 @@ public class MovieController {
         return new R(Code.WORK_OK, "删除成功");
     }
 
+    @GetMapping("/playMovie")
+    public R playMovie(int movieId) {
+        Movie movie = movieService.findById(movieId);
+        List<Movie> recommendMovieList = movieService.recommendMovieList(movieId);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("movie", movie);
+        dataMap.put("recommendMovieList", recommendMovieList);
+        return new R(Code.WORK_OK, "完成推荐", dataMap);
+    }
 }
