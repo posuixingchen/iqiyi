@@ -10,10 +10,10 @@ public interface MovieService {
     int saveMovie(Movie movie);
 
     //删除一条电影记录
-    int deleteMovie(Integer id);
+    void deleteMovie(Integer id);
 
     //更新一条电影记录
-    int updateMovie(Movie movie);
+    void updateMovie(Movie movie);
 
     //查询所有电影
     List<Movie> findMovie();

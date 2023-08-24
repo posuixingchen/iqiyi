@@ -46,7 +46,7 @@
                  left join category on movie_category.categoryid = category.id
     </select>
 
-    <select id="findById" resultType="com.zjc.pojo.Movie">
+    <select id="findById" resultMap="movieMap">
         select movie.*,
                actor.id          aid,
                actor.name        aname,
@@ -73,17 +73,17 @@
     </insert>
 
 
-    <delete id="deleteMovieCategories" parameterType="integer">
+    <delete id="deleteMovieCategories">
         delete
         from movie_category
         where movieid = #{id}
     </delete>
-    <delete id="deleteMovieActor" parameterType="integer">
+    <delete id="deleteMovieActor">
         delete
         from movie_actor
         where movieid = #{id}
     </delete>
-    <delete id="deleteMovie" parameterType="integer">
+    <delete id="deleteMovie">
         delete
         from movie
         where id = #{id}

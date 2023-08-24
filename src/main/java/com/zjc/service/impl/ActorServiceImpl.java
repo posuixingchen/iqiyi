@@ -38,4 +38,33 @@ public class ActorServiceImpl implements ActorService {
         }
         return flag;
     }
+
+    @Override
+    public Actor findById(int actorId) {
+        return actorMapper.findActorOne(actorId);
+    }
+
+    @Override
+    public void updateActor(Actor actor) {
+        actorMapper.updateActor(actor);
+        actorMapper.deleteActorRegion(actor.getId());
+        String regionStr = actor.getRegionStr();
+        String[] idArray = regionStr.split(",");
+        for (String regionid : idArray) {
+            int rid = Integer.parseInt(regionid);
+            ActorRegion entity = new ActorRegion();
+            entity.setActorid(actor.getId());
+            entity.setRegionid(rid);
+            actorRegionMapper.insert(entity);
+        }
+    }
+
+    @Override
+    public int deleteActor(int actorId) {
+        actorMapper.deleteActorRegion(actorId);
+        int flag = actorMapper.deleteActor(actorId);
+        if (flag == 0) {
+            return 0;
+        } else return 1;
+    }
 }

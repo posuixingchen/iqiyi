@@ -25,6 +25,13 @@
                  left join actor_region on actor.id = actor_region.actorid
                  left join region on actor_region.regionid = region.id
     </select>
+    <select id="findActorOne" resultMap="actorMap">
+        select actor.*, region.id rid, region.name rname
+        from actor
+                 left join actor_region on actor.id = actor_region.actorid
+                 left join region on actor_region.regionid = region.id
+        where actor.id = #{id}
+    </select>
 
     <insert id="saveActor" parameterType="com.zjc.pojo.Actor">
         insert into actor (name,birthday,sex,description,pic)
@@ -33,5 +40,26 @@
             select LAST_INSERT_ID as id
         </selectKey>
     </insert>
+
+    <update id="updateActor" parameterType="com.zjc.pojo.Actor">
+        update actor
+        set name        = #{name},
+            birthday    = #{birthday},
+            sex         = #{sex},
+            description = #{description},
+            pic         = #{pic}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorRegion">
+        delete
+        from actor_region
+        where actorid = #{id}
+    </delete>
+    <delete id="deleteActor">
+        delete
+        from actor
+        where id = #{id}
+    </delete>
 
 </mapper>

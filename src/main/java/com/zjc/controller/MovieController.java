@@ -80,7 +80,7 @@ public class MovieController {
     }
 
     @PostMapping("/updateMovie")
-    public R updateMovie(@RequestParam("file") MultipartFile file, HttpServletRequest request, @RequestBody Movie movie) {
+    public R updateMovie(@RequestParam("file") MultipartFile file, HttpServletRequest request, Movie movie) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
@@ -90,19 +90,13 @@ public class MovieController {
             e.printStackTrace();
         }
         FileLoad.upload(file, request);
-        int flag = movieService.updateMovie(movie);
-        if (flag < 1) {
-            return new R(Code.WORK_ERR, "修改失败");
-        }
-        return new R(Code.WORK_OK, "修改成功");
+        movieService.updateMovie(movie);
+        return new R(Code.WORK_OK, "更新成功");
     }
 
     @PostMapping("/deleteMovie/{id}")
     public R deleteMovie(@PathVariable("id") int movieId) {
-        int flag = movieService.deleteMovie(movieId);
-        if (flag != 1) {
-            return new R(Code.WORK_ERR, "删除失败");
-        }
+        movieService.deleteMovie(movieId);
         return new R(Code.WORK_OK, "删除成功");
     }
 

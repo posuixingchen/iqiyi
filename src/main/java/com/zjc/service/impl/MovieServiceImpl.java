@@ -32,25 +32,22 @@ public class MovieServiceImpl implements MovieService {
             MovieCategory entity = new MovieCategory();
             entity.setMovieid(mid);
             entity.setCategoryid(cateid);
-            movieCategoryMapper.insert(entity);
+            flag += movieCategoryMapper.insert(entity);
         }
         return flag;
     }
 
     @Override
-    public int deleteMovie(Integer id) {
-        int flag1 = movieMapper.deleteMovieCategories(id);
-        int flag2 = movieMapper.deleteMovieActor(id);
-        int flag3 = movieMapper.deleteMovie(id);
-        if (flag1 == 0 || flag2 == 0 || flag3 == 0) {
-            return 0;
-        } else return 1;
+    public void deleteMovie(Integer id) {
+        movieMapper.deleteMovieCategories(id);
+        movieMapper.deleteMovieActor(id);
+        movieMapper.deleteMovie(id);
     }
 
     @Override
-    public int updateMovie(Movie movie) {
-        int flag1 = movieMapper.updateMovie(movie);
-        int flag2 = movieMapper.deleteMovieCategories(movie.getId());
+    public void updateMovie(Movie movie) {
+        movieMapper.updateMovie(movie);
+        movieMapper.deleteMovieCategories(movie.getId());
         String categoryStr = movie.getCategoryStr();
         String[] cateids = categoryStr.split(",");
         for (String cid : cateids) {
@@ -60,10 +57,6 @@ public class MovieServiceImpl implements MovieService {
             entity.setCategoryid(cateid);
             movieCategoryMapper.insert(entity);
         }
-        if (flag1 == 0 || flag2 == 0) {
-            return 0;
-        }
-        return 1;
     }
 
     @Override

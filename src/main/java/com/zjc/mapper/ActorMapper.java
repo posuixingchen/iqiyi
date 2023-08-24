@@ -13,4 +13,12 @@ public interface ActorMapper extends BaseMapper<Actor> {
     public List<Actor> findActor();
 
     int saveActor();
+
+    Actor findActorOne(int actorId);
+
+    void updateActor(Actor actor);
+
+    void deleteActorRegion(int id);
+
+    int deleteActor(int actorId);
 }
