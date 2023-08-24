@@ -43,7 +43,9 @@ public class Movie {
 
     private List<Actor> actors;
 
-    private String categories;
+    private List<Category> categories;
+
+    private String categoryStr;
 
     public Movie() {
     }

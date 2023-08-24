@@ -3,14 +3,11 @@ package com.zjc.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zjc.pojo.Category;
 import com.zjc.pojo.Movie;
-import com.zjc.pojo.User;
 import com.zjc.service.CategoryService;
-import com.zjc.service.MovieActorService;
-import com.zjc.service.MovieCategoryService;
 import com.zjc.service.MovieService;
 import com.zjc.utils.Code;
+import com.zjc.utils.FileLoad;
 import com.zjc.utils.R;
-import org.apache.ibatis.javassist.CodeConverter;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequestMapping("movie")
 public class MovieController {
 
@@ -42,79 +40,61 @@ public class MovieController {
 
 
     @GetMapping("/findMovie")
-    public List<Movie> findMovie() {
-        return movieService.findMovie();
+    public R findMovie() {
+        List<Movie> result = movieService.findMovie();
+        if (result != null) {
+            return new R(Code.WORK_OK, "查询成功", result);
+        }
+        return new R(Code.WORK_ERR, "查询失败");
     }
 
     @PostMapping("/saveMovie")
-    public R save(@RequestParam("file") MultipartFile file, HttpServletRequest request, @RequestBody Movie movie) {
-
-        File dir = new File(ImagesSavePath);
-        //给文件重新设置一个名字
-        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String newFileName = UUID.randomUUID().toString().replaceAll("-", "") + suffix;
-
-        //创建新文件
-        File newFile = new File(ImagesSavePath + newFileName);
-        //复制操作
+    public R save(@RequestPart("file") MultipartFile file, HttpServletRequest request, Movie movie) {
         try {
-            String base64Str = Base64.encodeBase64String(file.getBytes());
-            movie.setPic(base64Str);
-            file.transferTo(newFile);
-            //协议 :// ip地址 ：端口号 / 文件目录(/images/xxx.jpg)
-            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/images/" + newFileName;
-            System.out.println("图片上传，访问URL：" + url);
-            int flag = movieService.saveMovie(movie);
-            if (flag != 1) {
-                return new R(Code.WORK_ERR, "提交失败");
+            if (file != null) {
+                String base64Str = Base64.encodeBase64String(file.getBytes());
+                movie.setPic(base64Str);
             }
-            return new R(Code.WORK_OK, "提交成功");
-        } catch (IOException e) {
-            return new R(Code.WORK_ERR, "IO异常");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        int flag = movieService.saveMovie(movie);
+        FileLoad.upload(file, request);
+        if (flag < 1) {
+            return new R(Code.WORK_ERR, "保存失败");
+        }
+        return new R(Code.WORK_OK, "保存成功");
     }
 
     @GetMapping("/findMovieOne/{id}")
     public R findMovieOne(@PathVariable("id") int movieId) {
         Movie movie = movieService.findById(movieId);
-        QueryWrapper<Category> wrapper = new QueryWrapper<>();
-        List<Category> allCategory = categoryService.findAll(wrapper);
+        List<Category> allCategory = categoryService.findAll();
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("movie", movie);
         dataMap.put("allCategory", allCategory);
         if (dataMap != null) {
-            return new R(Code.WORK_ERR, "查询失败");
+            return new R(Code.WORK_OK, "查询成功", dataMap);
         }
-        return new R(Code.WORK_OK, "查询成功", dataMap);
+        return new R(Code.WORK_ERR, "查询失败");
     }
 
-    @PostMapping("/updateMovie/{id}")
+    @PostMapping("/updateMovie")
     public R updateMovie(@RequestParam("file") MultipartFile file, HttpServletRequest request, @RequestBody Movie movie) {
-        if (file != null) {
-            File dir = new File(ImagesSavePath);
-            //给文件重新设置一个名字
-            String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString().replaceAll("-", "") + suffix;
-
-            //创建新文件
-            File newFile = new File(ImagesSavePath + newFileName);
-            //复制操作
-            try {
+        try {
+            if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
                 movie.setPic(base64Str);
-                file.transferTo(newFile);
-                //协议 :// ip地址 ：端口号 / 文件目录(/images/xxx.jpg)
-                String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/images/" + newFileName;
-                System.out.println("图片上传，访问URL：" + url);
-            } catch (IOException e) {
-                return new R(Code.WORK_ERR, "IO异常");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        FileLoad.upload(file, request);
         int flag = movieService.updateMovie(movie);
-        if (flag != 1) {
-            return new R(Code.WORK_ERR, "提交失败");
+        if (flag < 1) {
+            return new R(Code.WORK_ERR, "修改失败");
         }
-        return new R(Code.WORK_OK, "提交成功");
+        return new R(Code.WORK_OK, "修改成功");
     }
 
     @PostMapping("/deleteMovie/{id}")

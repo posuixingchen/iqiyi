@@ -16,7 +16,8 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryMapper categoryMapper;
 
     @Override
-    public List<Category> findAll(QueryWrapper<Category> wrapper) {
+    public List<Category> findAll() {
+        QueryWrapper<Category> wrapper = new QueryWrapper<>();
         return categoryMapper.selectList(wrapper);
     }
 }

@@ -25,8 +25,8 @@ public class MovieServiceImpl implements MovieService {
         int flag = 0;
         flag = movieMapper.saveMovie(movie);
         int mid = movie.getId();
-        String categories = movie.getCategories();
-        String[] cateids = categories.split(",");
+        String categoryStr = movie.getCategoryStr();
+        String[] cateids = categoryStr.split(",");
         for (String cid : cateids) {
             int cateid = Integer.parseInt(cid);
             MovieCategory entity = new MovieCategory();
@@ -51,8 +51,8 @@ public class MovieServiceImpl implements MovieService {
     public int updateMovie(Movie movie) {
         int flag1 = movieMapper.updateMovie(movie);
         int flag2 = movieMapper.deleteMovieCategories(movie.getId());
-        String categories = movie.getCategories();
-        String[] cateids = categories.split(",");
+        String categoryStr = movie.getCategoryStr();
+        String[] cateids = categoryStr.split(",");
         for (String cid : cateids) {
             int cateid = Integer.parseInt(cid);
             MovieCategory entity = new MovieCategory();

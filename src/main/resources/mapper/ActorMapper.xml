@@ -20,12 +20,18 @@
     </resultMap>
 
     <select id="findActor" resultMap="actorMap">
-        select actor.*,
-               region.id   rid,
-               region.name rname
+        select actor.*, region.id rid, region.name rname
         from actor
-                 inner join actor_region on actor.id = actor_region.actorid
-                 inner join region on actor_region.regionid = region.id
+                 left join actor_region on actor.id = actor_region.actorid
+                 left join region on actor_region.regionid = region.id
     </select>
+
+    <insert id="saveActor" parameterType="com.zjc.pojo.Actor">
+        insert into actor (name,birthday,sex,description,pic)
+        values (#{name},#{birthday},#{sex},#{description},#{pic})
+        <selectKey order="AFTER" keyProperty="id" resultType="Integer">
+            select LAST_INSERT_ID as id
+        </selectKey>
+    </insert>
 
 </mapper>
