@@ -48,22 +48,31 @@ public class MovieController {
         return new R(Code.WORK_ERR, "查询失败");
     }
 
-    @PostMapping("/saveMovie")
-    public R save(@RequestPart("file") MultipartFile file, HttpServletRequest request, Movie movie) {
-        try {
-            if (file != null) {
-                String base64Str = Base64.encodeBase64String(file.getBytes());
-                movie.setPic(base64Str);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    @PostMapping("/upLoad")
+    public R upLoad(@RequestPart("file") MultipartFile file) {
+        String base64 = FileLoad.upload(file);
+        if (base64 != null) {
+            return new R(Code.WORK_OK, "上传成功", base64);
         }
+        return new R(Code.WORK_ERR, "上传失败");
+    }
+
+    @PostMapping("/saveMovie")
+    public R save(Movie movie) {
         int flag = movieService.saveMovie(movie);
-        FileLoad.upload(file, request);
         if (flag < 1) {
             return new R(Code.WORK_ERR, "保存失败");
         }
         return new R(Code.WORK_OK, "保存成功");
+    }
+
+    @GetMapping("/findAllCategory")
+    public R findAllCategory() {
+        List<Category> allCategory = categoryService.findAll();
+        if (allCategory != null) {
+            return new R(Code.WORK_OK, "查询成功", allCategory);
+        }
+        return new R(Code.WORK_ERR, "查询失败");
     }
 
     @GetMapping("/findMovieOne/{id}")
@@ -80,7 +89,7 @@ public class MovieController {
     }
 
     @PostMapping("/updateMovie")
-    public R updateMovie(@RequestParam("file") MultipartFile file, HttpServletRequest request, Movie movie) {
+    public R updateMovie(@RequestParam("file") MultipartFile file, Movie movie) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
@@ -89,7 +98,7 @@ public class MovieController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FileLoad.upload(file, request);
+        FileLoad.upload(file);
         movieService.updateMovie(movie);
         return new R(Code.WORK_OK, "更新成功");
     }

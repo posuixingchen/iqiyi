@@ -56,7 +56,7 @@ public class ActorController {
     }
 
     @PostMapping("/saveActor")
-    public R save(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request, Actor actor) {
+    public R save(@RequestParam(value = "file") MultipartFile file, Actor actor) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
@@ -66,7 +66,7 @@ public class ActorController {
             e.printStackTrace();
         }
         int flag = actorService.saveActor(actor);
-        FileLoad.upload(file, request);
+        FileLoad.upload(file);
         return new R(Code.WORK_OK, "保存成功");
     }
 
@@ -85,7 +85,7 @@ public class ActorController {
 
 
     @PostMapping("/updateActor")
-    public R updateActor(@RequestParam("file") MultipartFile file, HttpServletRequest request, Actor actor) {
+    public R updateActor(@RequestParam("file") MultipartFile file, Actor actor) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
@@ -94,7 +94,7 @@ public class ActorController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FileLoad.upload(file, request);
+        FileLoad.upload(file);
         actorService.updateActor(actor);
         return new R(Code.WORK_OK, "更新成功");
     }
