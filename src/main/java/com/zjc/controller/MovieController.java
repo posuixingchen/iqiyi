@@ -58,7 +58,7 @@ public class MovieController {
 //    }
 
     @PostMapping("/saveMovie")
-    public R save(@RequestParam("file") MultipartFile file, Movie movie) {
+    public R save(@RequestParam("file") MultipartFile file, @RequestBody Movie movie) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
@@ -98,7 +98,7 @@ public class MovieController {
     }
 
     @PostMapping("/updateMovie")
-    public R updateMovie(@RequestParam("file") MultipartFile file, Movie movie) {
+    public R updateMovie(@RequestParam("file") MultipartFile file, @RequestBody Movie movie) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class ActorController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        int flag = actorService.saveActor(actor);
+        actorService.saveActor(actor);
         FileLoad.upload(file);
         return new R(Code.WORK_OK, "保存成功");
     }
@@ -85,7 +86,7 @@ public class ActorController {
 
 
     @PostMapping("/updateActor")
-    public R updateActor(@RequestParam("file") MultipartFile file, Actor actor) {
+    public R updateActor(@RequestParam("file") MultipartFile file, @RequestBody Actor actor) {
         try {
             if (file != null) {
                 String base64Str = Base64.encodeBase64String(file.getBytes());
