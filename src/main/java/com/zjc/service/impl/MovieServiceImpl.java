@@ -29,8 +29,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public int saveMovie(Movie movie) {
-        int flag = 0;
-        flag = movieMapper.saveMovie(movie);
+        int flag = movieMapper.saveMovie(movie);
         int mid = movie.getId();
         String categoryStr = movie.getCategoryStr();
         String[] cateids = categoryStr.split(",");

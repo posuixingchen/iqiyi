@@ -27,21 +27,21 @@ public class FileLoad {
             //创建新文件
             File newFile = new File(ImagesSavePath + newFileName);
             //复制操作
-//            String url = null;
+            String url = null;
             try {
                 file.transferTo(newFile);
-//                url = "/images/" + newFileName;
+                url = "/images/" + newFileName;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            return url;
-            String base64Str = null;
-            try {
-                base64Str = Base64.encodeBase64String(file.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return base64Str;
+            return url;
+//            String base64Str = null;
+//            try {
+//                base64Str = Base64.encodeBase64String(file.getBytes());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return base64Str;
         } else {
             return "文件不能为空";
         }

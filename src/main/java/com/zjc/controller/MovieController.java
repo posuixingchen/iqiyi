@@ -48,26 +48,26 @@ public class MovieController {
         return new R(Code.WORK_ERR, "查询失败");
     }
 
-    @PostMapping("/upLoad")
-    public R upLoad(@RequestParam("file") MultipartFile file) {
-        String base64 = FileLoad.upload(file);
-        if (base64 != null) {
-            return new R(Code.WORK_ERR, "上传失败");
-        }
-        return new R(Code.WORK_OK, "上传成功");
-    }
+//    @PostMapping("/upLoad")
+//    public R upLoad(@RequestParam("file") MultipartFile file) {
+//        String base64 = FileLoad.upload(file);
+//        if (base64 != null) {
+//            return new R(Code.WORK_ERR, "上传失败");
+//        }
+//        return new R(Code.WORK_OK, "上传成功");
+//    }
 
     @PostMapping("/saveMovie")
-    public R save(Movie movie) {
-//        try {
-//            if (file != null) {
-//                String base64Str = Base64.encodeBase64String(file.getBytes());
-//                movie.setPic(base64Str);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        FileLoad.upload(file);
+    public R save(@RequestParam("file") MultipartFile file, Movie movie) {
+        try {
+            if (file != null) {
+                String base64Str = Base64.encodeBase64String(file.getBytes());
+                movie.setPic(base64Str);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FileLoad.upload(file);
         int flag = movieService.saveMovie(movie);
         if (flag < 1) {
             return new R(Code.WORK_ERR, "保存失败");

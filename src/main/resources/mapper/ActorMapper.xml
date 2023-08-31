@@ -37,7 +37,7 @@
         insert into actor (name,birthday,sex,description,pic)
         values (#{name},#{birthday},#{sex},#{description},#{pic})
         <selectKey order="AFTER" keyProperty="id" resultType="Integer">
-            select LAST_INSERT_ID as id
+            select LAST_INSERT_ID() as id
         </selectKey>
     </insert>
 

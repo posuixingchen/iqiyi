@@ -130,7 +130,7 @@
         insert into movie(name,director,time_length,pub_date,description,rating,pic)
         values (#{name},#{director},#{time_length},#{pub_date},#{description},#{rating},#{pic})
         <selectKey order="AFTER" keyProperty="id" resultType="Integer">
-            select LAST_INSERT_ID as id
+            select LAST_INSERT_ID() as id
         </selectKey>
     </insert>
 
