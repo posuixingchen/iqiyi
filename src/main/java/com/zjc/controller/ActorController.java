@@ -56,20 +56,21 @@ public class ActorController {
         return new R(Code.WORK_ERR, "查询失败");
     }
 
-    @PostMapping("/saveActor")
-    public R save(@RequestParam(value = "file") MultipartFile file, Actor actor) {
-        try {
-            if (file != null) {
-                String base64Str = Base64.encodeBase64String(file.getBytes());
-                actor.setPic(base64Str);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+//    @RequestParam(value = "file")
+@PostMapping("/saveActor")
+public R save(MultipartFile file, Actor actor) {
+    try {
+        if (file != null) {
+            String base64Str = Base64.encodeBase64String(file.getBytes());
+            actor.setPic(base64Str);
         }
-        actorService.saveActor(actor);
-        FileLoad.upload(file);
-        return new R(Code.WORK_OK, "保存成功");
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    actorService.saveActor(actor);
+    FileLoad.upload(file);
+    return new R(Code.WORK_OK, "保存成功");
+}
 
     @PostMapping("/findActorOne/{id}")
     public R findActorOne(@PathVariable("id") int actorId) {

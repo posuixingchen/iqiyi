@@ -1,6 +1,7 @@
 package com.zjc.service;
 
 import com.zjc.pojo.Actor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

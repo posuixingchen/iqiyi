@@ -8,6 +8,7 @@ import com.zjc.pojo.MovieCategory;
 import com.zjc.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

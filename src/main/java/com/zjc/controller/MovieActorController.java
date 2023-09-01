@@ -29,7 +29,7 @@ public class MovieActorController {
     private ActorService actorService;
 
     @PostMapping("/saveMovieActor")
-    public R saveMovieActor(@RequestBody Movie movie) {
+    public R saveMovieActor(Movie movie) {
         int flag = movieActorService.saveMovieActor(movie);
         if (flag != 0) {
             return new R(Code.WORK_OK, "保存成功");
