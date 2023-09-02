@@ -13,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -58,16 +62,36 @@ public class MovieController {
 //    }
 
     @PostMapping("/saveMovie")
-    public R save(@RequestParam("file") MultipartFile file, @RequestBody Movie movie) {
+    @ResponseBody
+    public R save(HttpServletRequest request) {
+        MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request)
+                .getFiles("file");
+        Movie movie = new Movie();
+        movie.setName(params.getParameter("name"));
+        movie.setDirector(params.getParameter("director"));
         try {
-            if (file != null) {
-                String base64Str = Base64.encodeBase64String(file.getBytes());
-                movie.setPic(base64Str);
-            }
-        } catch (Exception e) {
+            movie.setPub_date(simpleDateFormat.parse(params.getParameter("pub_date")));
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        FileLoad.upload(file);
+        movie.setTime_length(Integer.parseInt(params.getParameter("time_length")));
+        movie.setRating(Float.parseFloat(params.getParameter("rating")));
+        movie.setDescription(params.getParameter("description"));
+        movie.setCategoryStr(params.getParameter("categoryStr"));
+        MultipartFile file = null;
+        for (int i = 0; i < files.size(); ++i) {
+            file = files.get(i);
+            if (!file.isEmpty()) {
+                try {
+                    String base64Str = Base64.encodeBase64String(file.getBytes());
+                    movie.setPic(base64Str);
+                    FileLoad.upload(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         int flag = movieService.saveMovie(movie);
         if (flag < 1) {
             return new R(Code.WORK_ERR, "保存失败");
@@ -98,16 +122,37 @@ public class MovieController {
     }
 
     @PostMapping("/updateMovie")
-    public R updateMovie(@RequestParam("file") MultipartFile file, @RequestBody Movie movie) {
+    @ResponseBody
+    public R updateMovie(HttpServletRequest request) {
+        MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request)
+                .getFiles("file");
+        Movie movie = new Movie();
+        movie.setId(Integer.parseInt(params.getParameter("id")));
+        movie.setName(params.getParameter("name"));
+        movie.setDirector(params.getParameter("director"));
         try {
-            if (file != null) {
-                String base64Str = Base64.encodeBase64String(file.getBytes());
-                movie.setPic(base64Str);
-            }
-        } catch (Exception e) {
+            movie.setPub_date(simpleDateFormat.parse(params.getParameter("pub_date")));
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        FileLoad.upload(file);
+        movie.setTime_length(Integer.parseInt(params.getParameter("time_length")));
+        movie.setRating(Float.parseFloat(params.getParameter("rating")));
+        movie.setDescription(params.getParameter("description"));
+        movie.setCategoryStr(params.getParameter("categoryStr"));
+        MultipartFile file = null;
+        for (int i = 0; i < files.size(); ++i) {
+            file = files.get(i);
+            if (!file.isEmpty()) {
+                try {
+                    String base64Str = Base64.encodeBase64String(file.getBytes());
+                    movie.setPic(base64Str);
+                    FileLoad.upload(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         movieService.updateMovie(movie);
         return new R(Code.WORK_OK, "更新成功");
     }

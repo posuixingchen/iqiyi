@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.UUID;
 @CrossOrigin
 @RequestMapping("actor")
 public class ActorController {
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     @Value("${movieimages-save-path}")
     private String ImagesSavePath;
@@ -56,21 +59,41 @@ public class ActorController {
         return new R(Code.WORK_ERR, "查询失败");
     }
 
-//    @RequestParam(value = "file")
-@PostMapping("/saveActor")
-public R save(MultipartFile file, Actor actor) {
-    try {
-        if (file != null) {
-            String base64Str = Base64.encodeBase64String(file.getBytes());
-            actor.setPic(base64Str);
+    @PostMapping("/saveActor")
+    @ResponseBody
+    public R save(HttpServletRequest request) {
+        MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request)
+                .getFiles("file");
+        Actor actor = new Actor();
+        actor.setName(params.getParameter("name"));
+        try {
+            actor.setBirthday(simpleDateFormat.parse(params.getParameter("birthday")));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        actor.setSex(params.getParameter("sex"));
+        actor.setDescription(params.getParameter("description"));
+        actor.setRegionStr(params.getParameter("regionStr"));
+        MultipartFile file = null;
+        for (int i = 0; i < files.size(); ++i) {
+            file = files.get(i);
+            if (!file.isEmpty()) {
+                try {
+                    String base64Str = Base64.encodeBase64String(file.getBytes());
+                    actor.setPic(base64Str);
+                    FileLoad.upload(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        int flag = actorService.saveActor(actor);
+        if (flag < 1) {
+            return new R(Code.WORK_ERR, "保存失败");
+        }
+        return new R(Code.WORK_OK, "保存成功");
     }
-    actorService.saveActor(actor);
-    FileLoad.upload(file);
-    return new R(Code.WORK_OK, "保存成功");
-}
 
     @PostMapping("/findActorOne/{id}")
     public R findActorOne(@PathVariable("id") int actorId) {
@@ -87,16 +110,33 @@ public R save(MultipartFile file, Actor actor) {
 
 
     @PostMapping("/updateActor")
-    public R updateActor(@RequestParam("file") MultipartFile file, @RequestBody Actor actor) {
+    public R updateActor(HttpServletRequest request) {
+        MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request)
+                .getFiles("file");
+        Actor actor = new Actor();
+        actor.setName(params.getParameter("name"));
         try {
-            if (file != null) {
-                String base64Str = Base64.encodeBase64String(file.getBytes());
-                actor.setPic(base64Str);
-            }
-        } catch (Exception e) {
+            actor.setBirthday(simpleDateFormat.parse(params.getParameter("birthday")));
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        FileLoad.upload(file);
+        actor.setSex(params.getParameter("sex"));
+        actor.setDescription(params.getParameter("description"));
+        actor.setRegionStr(params.getParameter("regionStr"));
+        MultipartFile file = null;
+        for (int i = 0; i < files.size(); ++i) {
+            file = files.get(i);
+            if (!file.isEmpty()) {
+                try {
+                    String base64Str = Base64.encodeBase64String(file.getBytes());
+                    actor.setPic(base64Str);
+                    FileLoad.upload(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         actorService.updateActor(actor);
         return new R(Code.WORK_OK, "更新成功");
     }
