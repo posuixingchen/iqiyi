@@ -31,7 +31,7 @@ import java.util.UUID;
 @CrossOrigin
 @RequestMapping("actor")
 public class ActorController {
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Value("${movieimages-save-path}")
     private String ImagesSavePath;
@@ -82,7 +82,6 @@ public class ActorController {
                 try {
                     String base64Str = Base64.encodeBase64String(file.getBytes());
                     actor.setPic(base64Str);
-                    FileLoad.upload(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

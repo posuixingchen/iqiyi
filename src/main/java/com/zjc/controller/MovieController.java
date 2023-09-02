@@ -32,7 +32,7 @@ import java.util.UUID;
 @RequestMapping("movie")
 public class MovieController {
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd/");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Value("${movieimages-save-path}")
     private String ImagesSavePath;
@@ -86,7 +86,6 @@ public class MovieController {
                 try {
                     String base64Str = Base64.encodeBase64String(file.getBytes());
                     movie.setPic(base64Str);
-                    FileLoad.upload(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

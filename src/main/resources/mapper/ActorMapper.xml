@@ -20,21 +20,21 @@
     </resultMap>
 
     <select id="findActor" resultMap="actorMap">
-        select actor.*, region.id rid, region.name rname
-        from actor
-                 left join actor_region on actor.id = actor_region.actorid
-                 left join region on actor_region.regionid = region.id
+        select iqiyi.actor.*, iqiyi.region.id rid, iqiyi.region.name rname
+        from iqiyi.actor
+                 left join iqiyi.actor_region on actor.id = actor_region.actorid
+                 left join iqiyi.region on actor_region.regionid = region.id
     </select>
     <select id="findActorOne" resultMap="actorMap">
-        select actor.*, region.id rid, region.name rname
-        from actor
-                 left join actor_region on actor.id = actor_region.actorid
-                 left join region on actor_region.regionid = region.id
+        select iqiyi.actor.*, iqiyi.region.id rid, iqiyi.region.name rname
+        from iqiyi.actor
+                 left join iqiyi.actor_region on actor.id = actor_region.actorid
+                 left join iqiyi.region on actor_region.regionid = region.id
         where actor.id = #{id}
     </select>
 
     <insert id="saveActor" parameterType="com.zjc.pojo.Actor">
-        insert into actor (name,birthday,sex,description,pic)
+        insert into iqiyi.actor (name,birthday,sex,description,pic)
         values (#{name},#{birthday},#{sex},#{description},#{pic})
         <selectKey order="AFTER" keyProperty="id" resultType="Integer">
             select LAST_INSERT_ID() as id
@@ -42,7 +42,7 @@
     </insert>
 
     <update id="updateActor" parameterType="com.zjc.pojo.Actor">
-        update actor
+        update iqiyi.actor
         set name        = #{name},
             birthday    = #{birthday},
             sex         = #{sex},
@@ -53,12 +53,12 @@
 
     <delete id="deleteActorRegion">
         delete
-        from actor_region
+        from iqiyi.actor_region
         where actorid = #{id}
     </delete>
     <delete id="deleteActor">
         delete
-        from actor
+        from iqiyi.actor
         where id = #{id}
     </delete>
 
