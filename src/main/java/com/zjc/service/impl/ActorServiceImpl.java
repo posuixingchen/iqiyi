@@ -27,7 +27,7 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public int saveActor(Actor actor) {
-        int flag = actorMapper.saveActor();
+        int flag = actorMapper.saveActor(actor);
         int aid = actor.getId();
         String regionStr = actor.getRegionStr();
         String[] idArray = regionStr.split(",");
@@ -49,13 +49,14 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void updateActor(Actor actor) {
         actorMapper.updateActor(actor);
-        actorMapper.deleteActorRegion(actor.getId());
+        int aid = actor.getId();
+        actorMapper.deleteActorRegion(aid);
         String regionStr = actor.getRegionStr();
         String[] idArray = regionStr.split(",");
         for (String regionid : idArray) {
             int rid = Integer.parseInt(regionid);
             ActorRegion entity = new ActorRegion();
-            entity.setActorid(actor.getId());
+            entity.setActorid(aid);
             entity.setRegionid(rid);
             actorRegionMapper.insert(entity);
         }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface ActorMapper extends BaseMapper<Actor> {
     public List<Actor> findActor();
 
-    int saveActor();
+    int saveActor(Actor actor);
 
     Actor findActorOne(int actorId);
 

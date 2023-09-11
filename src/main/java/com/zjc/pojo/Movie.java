@@ -43,6 +43,9 @@ public class Movie {
     @TableField("pic")
     private String pic;
 
+    @TableField("url")
+    private String url;
+
     private List<Actor> actors;
 
     private String actorIds;

@@ -13,6 +13,7 @@
         <result property="description" column="description"/>
         <result property="rating" column="rating"/>
         <result property="pic" column="pic"/>
+        <result property="url" column="url"/>
 
         <collection property="categories" ofType="com.zjc.pojo.Category">
             <id property="id" column="cid"/>

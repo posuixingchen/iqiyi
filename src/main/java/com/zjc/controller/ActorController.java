@@ -114,6 +114,7 @@ public class ActorController {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request)
                 .getFiles("file");
         Actor actor = new Actor();
+        actor.setId(Integer.parseInt(params.getParameter("id")));
         actor.setName(params.getParameter("name"));
         try {
             actor.setBirthday(simpleDateFormat.parse(params.getParameter("birthday")));
@@ -130,7 +131,7 @@ public class ActorController {
                 try {
                     String base64Str = Base64.encodeBase64String(file.getBytes());
                     actor.setPic(base64Str);
-                    FileLoad.upload(file);
+//                    FileLoad.upload(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -36,6 +36,8 @@ public class MovieController {
 
     @Value("${movieimages-save-path}")
     private String ImagesSavePath;
+    @Value("${web.movie-path}")
+    private String MoviePath;
 
     @Autowired
     private MovieService movieService;
@@ -116,6 +118,17 @@ public class MovieController {
         dataMap.put("allCategory", allCategory);
         if (dataMap != null) {
             return new R(Code.WORK_OK, "查询成功", dataMap);
+        }
+        return new R(Code.WORK_ERR, "查询失败");
+    }
+
+    @GetMapping("/findMoviePlay/{id}")
+    public R findMoviePlay(@PathVariable("id") int movieId) {
+        Movie movie = movieService.findById(movieId);
+//        String moviepath = MoviePath + movie.getUrl();
+        String moviepath = movie.getUrl();
+        if (moviepath != null) {
+            return new R(Code.WORK_OK, "查询成功", moviepath);
         }
         return new R(Code.WORK_ERR, "查询失败");
     }
