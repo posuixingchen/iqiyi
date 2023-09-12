@@ -22,8 +22,9 @@ public class MovieActorServiceImpl implements MovieActorService {
     public int saveMovieActor(Movie movie) {
         int flag = 0;
         int mid = movie.getId();
-        String actorIds = movie.getActorIds();
-        String[] actorIdArray = actorIds.split(",");
+//        String actorIds = movie.getActorIds();
+//        String[] actorIdArray = actorIds.split(",");
+        String[] actorIdArray = movie.getActorStd();
         for (String aids : actorIdArray) {
             int aid = Integer.parseInt(aids);
             MovieActor entity = new MovieActor();

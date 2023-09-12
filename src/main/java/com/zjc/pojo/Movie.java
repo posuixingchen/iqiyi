@@ -50,6 +50,8 @@ public class Movie {
 
     private String actorIds;
 
+    private String[] actorStd;
+
     private List<Category> categories;
 
     private String categoryStr;
